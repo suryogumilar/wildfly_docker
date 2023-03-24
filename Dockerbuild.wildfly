@@ -1,0 +1,43 @@
+FROM centos:centos8.3.2011
+
+### prepare environment prerequisite
+RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+RUN dnf --assumeyes install epel-release && dnf --assumeyes update
+RUN dnf --assumeyes install initscripts net-tools nano unzip wget iputils \
+    telnet openssl java-17-openjdk-devel.x86_64 diffutils.x86_64 \
+    ncurses-devel nfs-utils maven ncurses
+RUN dnf clean all
+
+## setting java envi
+
+RUN touch /etc/profile.d/java.sh && echo '#!/bin/bash' >> /etc/profile.d/java.sh 
+RUN sed -i -e '$aJAVA_HOME="/usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64"' /etc/profile.d/java.sh
+RUN sed -i -e '$aexport JAVA_HOME' /etc/profile.d/java.sh
+RUN sed -i -e '$aPATH="$PATH:/usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin"' /etc/profile.d/java.sh
+RUN  sed -i -e '$aexport PATH' /etc/profile.d/java.sh
+
+RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin/java
+RUN update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin/javac
+
+
+## setting ant envi 
+RUN mkdir -p /usr/local/ant && cd /usr/local/ant && \
+    wget https://dlcdn.apache.org/ant/binaries/apache-ant-1.10.13-bin.zip && \
+    unzip apache-ant-1.10.13-bin.zip
+RUN touch /etc/profile.d/ant.sh && echo '#!/bin/bash' >> /etc/profile.d/ant.sh 
+RUN  sed -i -e '$aANT_HOME="/usr/local/ant/apache-ant-1.10.13"' /etc/profile.d/ant.sh
+RUN  sed -i -e '$aPATH="$PATH:/usr/local/ant/apache-ant-1.10.13/bin"' /etc/profile.d/ant.sh
+RUN  sed -i -e '$aexport ANT_HOME' /etc/profile.d/ant.sh
+RUN  sed -i -e '$aexport PATH' /etc/profile.d/ant.sh
+
+## setting wildfly install script
+RUN mkdir -p /usr/local/wildfly/install_script
+COPY wildfly_install_script/wildfly-install.sh /usr/local/wildfly/install_script/wildfly_install.sh
+RUN chmod 755 /usr/local/wildfly/install_script/wildfly_install.sh && \
+    /usr/local/wildfly/install_script/wildfly_install.sh
+COPY wildfly_script/our_wildfly_setenv.sh /etc/profile.d/wildfly_setenv.sh
+COPY wildfly_script/run_wildfly.sh /run_wildfly.sh
+RUN chmod 755 /run_wildfly.sh
+ENTRYPOINT ["/bin/bash", "-l", "-c" ]
+CMD ["/run_wildfly.sh"]
