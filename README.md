@@ -1,8 +1,9 @@
 # Create Wildfly Docker Image
 
-This repository for creating wildfly docker image. Using : 
- - Wildfly version *27.0.1-Final* 
- - JDK *java-17-openjdk-devel.x86_64* *(java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64)* 
+This repository for creating wildfly docker image. Using :
+ - Almalinux 8.7 
+ - Wildfly version *26.1.2-Final* 
+ - JDK *java-11-openjdk-devel.x86_64* *(java-11-openjdk-11.0.18.0.10-2.el8_7.x86_64)* 
  - Ant *apache-ant-1.10.13* 
 
 See also https://github.com/suryogumilar/primekey_ss_docker/blob/main/instalasi.md
@@ -17,7 +18,7 @@ the &lt;tag_name&gt;:&lt;tag_version&gt; examples is: local_wildfly:27.0.1.Final
 
 The keystore would be placed in path `/opt/wildfly/standalone/configuration/keystore/keystore.jks` 
 
-using local_wildfly:27.0.1.Final as a tag name and version:
+using local_wildfly:26.1.2.Final as a tag name and version:
 
 ### importing key and certificates to truststore and keystore files
 
@@ -59,18 +60,18 @@ keytool -list -keystore apptrustore.jks
 
 ```sh
 
-docker run -it --rm --name wildfly_2701 \
+docker run -it --rm --name wildfly_2612 \
  -p 8888:8080 -p 8443:8443 -p 8442:8442 -p 9990:9990 \
  -v ./certificates_dir/certa_wildfly/wildfly_keystore.p12:/opt/wildfly/standalone/configuration/keystore/wildfly_keystore.p12:ro \
  -v ./certificates_dir/certa_client_wildfly/apptrustore.jks:/opt/wildfly/standalone/configuration/keystore/truststore.jks \
  -v ./transit_folder:/mnt/transit_folder \
- local_wildfly:27.0.1.Final
+ local_wildfly:26.1.2.Final
 ```
 
 Wait until the server is up, test by connecting to the server through the three port opened by the server. At this state the port 8443 running using self signed certificate
 
 Connect to the container
 
-`docker exec -it wildfly_2701 bash`
+`docker exec -it wildfly_2612 bash`
 
 then run script in folder *wildfly_config_scripts* (edit accordingly)

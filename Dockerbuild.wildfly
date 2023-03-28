@@ -1,24 +1,27 @@
-FROM centos:centos8.3.2011
-
+#FROM centos:centos8.3.2011
 ### prepare environment prerequisite
-RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
-RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+#RUN sed -i 's/mirrorlist/#mirrorlist/g' /etc/yum.repos.d/CentOS-*
+#RUN sed -i 's|#baseurl=http://mirror.centos.org|baseurl=http://vault.centos.org|g' /etc/yum.repos.d/CentOS-*
+
+#Using Almalinux now
+
+FROM almalinux:8.7
 RUN dnf --assumeyes install epel-release && dnf --assumeyes update
 RUN dnf --assumeyes install initscripts net-tools nano unzip wget iputils \
-    telnet openssl java-17-openjdk-devel.x86_64 diffutils.x86_64 \
+    telnet openssl java-11-openjdk-devel.x86_64 diffutils.x86_64 \
     ncurses-devel nfs-utils maven ncurses
 RUN dnf clean all
 
 ## setting java envi
 
 RUN touch /etc/profile.d/java.sh && echo '#!/bin/bash' >> /etc/profile.d/java.sh 
-RUN sed -i -e '$aJAVA_HOME="/usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64"' /etc/profile.d/java.sh
+RUN sed -i -e '$aJAVA_HOME="/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.x86_64/"' /etc/profile.d/java.sh
 RUN sed -i -e '$aexport JAVA_HOME' /etc/profile.d/java.sh
-RUN sed -i -e '$aPATH="$PATH:/usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin"' /etc/profile.d/java.sh
+RUN sed -i -e '$aPATH="$PATH:/usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.x86_64/bin"' /etc/profile.d/java.sh
 RUN  sed -i -e '$aexport PATH' /etc/profile.d/java.sh
 
-RUN update-alternatives --set java /usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin/java
-RUN update-alternatives --set javac /usr/lib/jvm/java-17-openjdk-17.0.1.0.12-2.el8_5.x86_64/bin/javac
+RUN update-alternatives --set java /usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.x86_64/bin/java
+RUN update-alternatives --set javac /usr/lib/jvm/java-11-openjdk-11.0.18.0.10-2.el8_7.x86_64/bin/javac
 
 
 ## setting ant envi 

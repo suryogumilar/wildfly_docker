@@ -7,7 +7,7 @@
 #tested-version2 :10.1.0.Final
 #tested-distros2 :Debian 8, Centos 6
  
-WILDFLY_VERSION=27.0.1.Final
+WILDFLY_VERSION=26.1.2.Final
 WILDFLY_FILENAME=wildfly-$WILDFLY_VERSION
 WILDFLY_ARCHIVE_NAME=$WILDFLY_FILENAME.tar.gz
 WILDFLY_DOWNLOAD_ADDRESS=https://github.com/wildfly/wildfly/releases/download/$WILDFLY_VERSION/$WILDFLY_ARCHIVE_NAME

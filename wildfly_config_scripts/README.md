@@ -24,7 +24,7 @@ and then attach both of the containers
 
 ```sh
 docker network connect wfNetwork wfmariadb
-docker network connect wfNetwork wildfly_2701 
+docker network connect wfNetwork wildfly_2612 
 ```
 
 Check if containers are part of the new network:
